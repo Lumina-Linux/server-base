@@ -1,0 +1,11 @@
+NAME="Lumina Linux Server"
+PRETTY_NAME="Lumina Linux Server"
+ID=lumina
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;23;147;209"
+HOME_URL="https://luminalinux.org/"
+DOCUMENTATION_URL="https://docs.luminalinux.org/"
+SUPPORT_URL="https://support.luminalinux.org/"
+BUG_REPORT_URL="https://bugs.luminalinux.org/"
+LOGO=lumina-logo

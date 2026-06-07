@@ -1,0 +1,19 @@
+{
+  "logo": {
+    "source": "/usr/share/lumina/logo.txt",
+    "color": {"1": "blue"}
+  },
+  "modules": [
+    "title",
+    "separator",
+    "os",
+    "kernel",
+    "uptime",
+    "packages",
+    "shell",
+    "wm",
+    "cpu",
+    "gpu",
+    "memory"
+  ]
+}

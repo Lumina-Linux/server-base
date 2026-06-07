@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = pacman
+
+[Action]
+Description = Inyectando esteroides a Pacman y Makepkg (Optimizaciones Lumina)...
+When = PostTransaction
+Exec = /bin/sh -c "/usr/bin/sed -i 's/^#ParallelDownloads.*/ParallelDownloads = 10/' /etc/pacman.conf && /usr/bin/sed -i 's/^#Color/Color\nILoveCandy/' /etc/pacman.conf && /usr/bin/sed -i 's/^#MAKEFLAGS.*/MAKEFLAGS=\"-j\$(nproc)\"/' /etc/makepkg.conf && /usr/bin/sed -i 's/^COMPRESSZST.*/COMPRESSZST=(zstd -c -T0 -z -)/' /etc/makepkg.conf"

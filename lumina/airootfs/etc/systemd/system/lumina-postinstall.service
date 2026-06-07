@@ -1,0 +1,11 @@
+[Unit]
+Description=Configuracion Inicial de Snapper para Lumina OS
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/lumina-postinstall.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

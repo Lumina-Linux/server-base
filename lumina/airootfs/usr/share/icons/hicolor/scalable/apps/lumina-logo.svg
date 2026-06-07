@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="glow" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="20%" stop-color="#fdf4d0"/>
+      <stop offset="60%" stop-color="#d4a373"/>
+      <stop offset="100%" stop-color="#5c3a21"/>
+    </radialGradient>
+    <linearGradient id="crystal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+  
+  <circle cx="256" cy="256" r="240" fill="url(#glow)"/>
+  
+  <path d="M256 80 L380 400 L132 400 Z" fill="url(#crystal)"/>
+  <path d="M180 180 L280 400 L80 400 Z" fill="url(#crystal)"/>
+  <path d="M340 150 L450 400 L230 400 Z" fill="url(#crystal)"/>
+</svg>
