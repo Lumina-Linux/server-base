@@ -51,7 +51,24 @@ chmod 750 /.snapshots
 # Esto repara el divorcio de Calamares y habilita el rollback automático en terminal
 btrfs subvolume set-default 5 /
 
-echo "¡Estructura de Snapper y Btrfs automatizada con éxito!"
+# ---------------------------------------------------------------------
+# STEP 3.5: Reparación del Keyring de Pacman (Eliminando el tmpfs fantasma)
+# ---------------------------------------------------------------------
+echo "Reparando persistencia del Keyring de Pacman..."
+UNIT="etc-pacman.d-gnupg.mount"
+
+# Si la unidad existe en el sistema, la detenemos, enmascaramos y recreamos
+if systemctl list-unit-files "$UNIT" > /dev/null 2>&1; then
+    systemctl stop "$UNIT"
+    systemctl mask "$UNIT"
+    umount -l /etc/pacman.d/gnupg
+    rm -rf /etc/pacman.d/gnupg
+    mkdir -p /etc/pacman.d/gnupg
+    pacman-key --init
+    pacman-key --populate archlinux
+fi
+
+echo "¡Estructura de Snapper, Btrfs y Keyring automatizada con éxito!"
 
 # ---------------------------------------------------------------------
 # STEP 4: PROTOCOLO DE AUTODESTRUCCIÓN (Fin del peligro)
