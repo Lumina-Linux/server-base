@@ -114,11 +114,6 @@ xfsprogs
 xl2tpd
 zsh
 
-# Lumina specifics
-
-lumina-keyring
-lumina-system-config
-
 # --- Base Gráfica Mínima para el Instalador Live ---
 xorg-server
 xorg-xinit

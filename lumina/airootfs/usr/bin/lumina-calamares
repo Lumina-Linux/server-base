@@ -17,7 +17,7 @@ if [ -z "$SFS_REAL_PATH" ]; then
     exit 1
 fi
 
-echo "[Lumina-Wrapper] ¡Bingo! SquashFS detectado en: $SFS_REAL_PATH"
+echo "[Lumina-Wrapper] SquashFS detectado en: $SFS_REAL_PATH"
 
 # 3. Validar que el archivo de configuración de Calamares exista
 if [ ! -f "$CONF_FILE" ]; then
@@ -25,12 +25,10 @@ if [ ! -f "$CONF_FILE" ]; then
     exit 1
 fi
 
-# 4. Inyección quirúrgica con sed usando un delimitador alternativo (|) por las diagonales de la ruta
+# 4. Inyección con sed usando un delimitador alternativo (|) por las diagonales de la ruta
 echo "[Lumina-Wrapper] Planchando la ruta real en unpackfs.conf..."
 sed -i "s|source: \".*\"|source: \"$SFS_REAL_PATH\"|g" "$CONF_FILE"
 
-# Opcional: Si prefieres usar la etiqueta comodín fija en lugar de reescribir la línea completa:
-# sed -i "s|$TAG_COMODIN|$SFS_REAL_PATH|g" "$CONF_FILE"
 
 echo "[Lumina-Wrapper] Configuración planchada con éxito. Lanzando Calamares..."
 
