@@ -9,12 +9,12 @@ sidebar: widget
 navigation: widget
 slideshow: "show/welcome.qml"
 strings:
-    productName:         Lumina Linux Server
+    productName:         Lumina Server
     shortProductName:    Lumina
-    version:             2026.05
-    shortVersion:        2026.05
-    versionedName:       Lumina Linux Server 2026.05
-    shortVersionedName:  Lumina 2026.05
+    version:             2026.07
+    shortVersion:        2026.07
+    versionedName:       Lumina Linux Server 2026.07
+    shortVersionedName:  Lumina 2026.07
     bootloaderEntryName: Lumina Linux Server
     productUrl:          https://luminalinux.org
     supportUrl:          https://luminalinux.org/support

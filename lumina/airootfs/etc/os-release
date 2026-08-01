@@ -1,5 +1,5 @@
-NAME="Lumina Linux Server"
-PRETTY_NAME="Lumina Linux Server"
+NAME="Lumina Server"
+PRETTY_NAME="Lumina Server"
 ID=lumina
 ID_LIKE=arch
 BUILD_ID=rolling
