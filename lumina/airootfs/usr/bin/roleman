@@ -1,0 +1,205 @@
+#!/bin/bash
+
+# ==============================================================================
+# LUMINA SERVER - DYNAMIC ROLE MANAGER
+# ==============================================================================
+
+# Verify superuser privileges
+if [[ $EUID -ne 0 ]]; then
+   echo "Execution halted. Root privileges are required to run this utility."
+   exit 1
+fi
+
+# 1. ROLE DICTIONARY (Single Source of Truth)
+# Format: [Role_ID]="package1 package2 package3"
+declare -A ROLES
+declare -A DESC
+
+ORDEN_ROLES=(
+    "kernel-lts" "kernel-hardened"
+    "net-manager" "net-ssh" "sec-ufw" "sec-firewalld"
+    "core-dnsmasq" "core-bind" "core-kea" "core-ldap"
+    "virt-podman" "virt-docker" "virt-kvm"
+    "web-nginx" "web-caddy" "web-apache" "web-tomcat"
+    "db-postgres" "db-mariadb" "db-redis"
+    "mgmt-cockpit" "mgmt-ansible" "mgmt-vpn"
+    "store-samba" "store-nfs"
+    "backup-snapper"
+    "util-term" "util-mon" "util-net"
+    "comm-matrix"
+    "mail-stack"
+    "lb-haproxy"
+    "obs-stack"
+    "perf-numa"
+)
+
+# --- GROUP 1: KERNEL ---
+ROLES[kernel-lts]="linux-lts linux-lts-headers"
+DESC[kernel-lts]="LTS Kernel (Stable & Recommended)"
+ROLES[kernel-hardened]="linux-hardened linux-hardened-headers"
+DESC[kernel-hardened]="Hardened Kernel (Advanced Security)"
+
+# --- GROUP 2: NETWORK AND BASE SECURITY ---
+ROLES[net-manager]="networkmanager"
+DESC[net-manager]="NetworkManager Stack"
+ROLES[net-ssh]="openssh"
+DESC[net-ssh]="OpenSSH Secure Shell"
+ROLES[sec-ufw]="ufw"
+DESC[sec-ufw]="UFW (Uncomplicated Firewall)"
+ROLES[sec-firewalld]="firewalld"
+DESC[sec-firewalld]="Firewalld (Zone-Based Management)"
+
+# --- GROUP 3: CORE INFRASTRUCTURE SERVICES ---
+ROLES[core-dnsmasq]="dnsmasq"
+DESC[core-dnsmasq]="Dnsmasq (Lightweight DNS & DHCP)"
+ROLES[core-bind]="bind"
+DESC[core-bind]="BIND9 (Enterprise DNS Server)"
+ROLES[core-kea]="kea"
+DESC[core-kea]="Kea DHCP Server"
+ROLES[core-ldap]="openldap"
+DESC[core-ldap]="OpenLDAP (Directory Service)"
+
+# --- GROUP 4: VIRTUALIZATION AND CONTAINERS ---
+ROLES[virt-podman]="podman podman-docker catatonit"
+DESC[virt-podman]="Podman Stack (Recommended/Rootless)"
+ROLES[virt-docker]="docker docker-compose"
+DESC[virt-docker]="Classic Docker Engine"
+ROLES[virt-kvm]="qemu-base libvirt virt-install"
+DESC[virt-kvm]="KVM/QEMU Hypervisor"
+
+# --- GROUP 5: WEB AND APPLICATION SERVERS ---
+ROLES[web-nginx]="nginx"
+DESC[web-nginx]="Nginx (Web Server & Reverse Proxy)"
+ROLES[web-caddy]="caddy"
+DESC[web-caddy]="Caddy Server (Auto SSL)"
+ROLES[web-apache]="apache"
+DESC[web-apache]="Apache HTTP Server"
+ROLES[web-tomcat]="tomcat"
+DESC[web-tomcat]="Apache Tomcat (Java Environment)"
+
+# --- GROUP 6: DATABASE SYSTEMS ---
+ROLES[db-postgres]="postgresql"
+DESC[db-postgres]="PostgreSQL (Relational Engine)"
+ROLES[db-mariadb]="mariadb"
+DESC[db-mariadb]="MariaDB (MySQL Drop-in Replacement)"
+ROLES[db-redis]="redis"
+DESC[db-redis]="Redis (In-Memory Cache & NoSQL)"
+
+# --- GROUP 7: MANAGEMENT AND AUTOMATION ---
+ROLES[mgmt-cockpit]="cockpit cockpit-storaged"
+DESC[mgmt-cockpit]="Cockpit (Web Monitoring Console)"
+ROLES[mgmt-ansible]="ansible"
+DESC[mgmt-ansible]="Ansible Automation (Agentless)"
+ROLES[mgmt-vpn]="wireguard-tools tailscale"
+DESC[mgmt-vpn]="Private Networks (WireGuard & Tailscale)"
+
+# --- GROUP 8: SHARED STORAGE SERVICES ---
+ROLES[store-samba]="samba"
+DESC[store-samba]="Samba Server (Mixed Environments)"
+ROLES[store-nfs]="nfs-utils"
+DESC[store-nfs]="NFS Server (Linux-to-Linux Storage)"
+
+# --- GROUP 9: BACKUP AND SNAPSHOT MANAGEMENT ---
+ROLES[backup-snapper]="snapper snap-pac"
+DESC[backup-snapper]="Snapper Stack (Btrfs Manager)"
+
+# --- GROUP 10: SERVER UTILITIES AND DIAGNOSTICS ---
+ROLES[util-term]="tmux screen"
+DESC[util-term]="Terminal Persistence (Tmux/Screen)"
+ROLES[util-mon]="htop iotop sysstat smartmontools"
+DESC[util-mon]="Monitoring & Performance (Htop, Sysstat)"
+ROLES[util-net]="tcpdump nmap iperf3 rsync curl wget git"
+DESC[util-net]="Networking & Transfer (Nmap, Rsync, etc.)"
+
+# --- GROUP 11: COMMUNICATION & MESSAGING ---
+ROLES[comm-matrix]="matrix-synapse"
+DESC[comm-matrix]="Matrix Synapse (Decentralized Messaging)"
+
+# --- GROUP 12: MAIL SERVER STACK ---
+ROLES[mail-stack]="postfix dovecot"
+DESC[mail-stack]="Mail Stack (Postfix SMTP & Dovecot IMAP)"
+
+# --- GROUP 13: LOAD BALANCING ---
+ROLES[lb-haproxy]="haproxy"
+DESC[lb-haproxy]="HAProxy (TCP/HTTP Load Balancer)"
+
+# --- GROUP 14: OBSERVABILITY STACK ---
+ROLES[obs-stack]="prometheus grafana"
+DESC[obs-stack]="Observability Stack (Prometheus & Grafana)"
+
+# --- GROUP 15: PERFORMANCE & HARDWARE OPTIMIZATION ---
+ROLES[perf-numa]="numactl numad"
+DESC[perf-numa]="NUMA Management (CPU/Memory Optimization)"
+
+# 2. STATE AUDIT (System Awareness)
+# Check currently installed packages and build the array for whiptail
+MENU_OPTIONS=()
+INITIALLY_INSTALLED=()
+
+for ROLE_ID in "${ORDEN_ROLES[@]}"; do
+    # pacman -T checks for missing dependencies. Returns 0 if all are installed.
+    if pacman -T ${ROLES[$ROLE_ID]} &>/dev/null; then
+        STATE="ON"
+        INITIALLY_INSTALLED+=("$ROLE_ID")
+    else
+        STATE="OFF"
+    fi
+    # Append elements to the menu array (ID, Description, State)
+    MENU_OPTIONS+=("$ROLE_ID" "${DESC[$ROLE_ID]}" "$STATE")
+done
+
+# 3. VISUAL INTERFACE (Whiptail)
+SELECTION_STR=$(whiptail --title "Lumina Server - Role Manager" --checklist \
+"Check or uncheck server roles. Checked roles are currently installed.\n[Space] to select | [Enter] to confirm:" \
+22 75 12 "${MENU_OPTIONS[@]}" 3>&1 1>&2 2>&3)
+
+# Handle user cancellation (Esc/Cancel)
+if [ $? -ne 0 ]; then
+    echo -e "\n==> Operation cancelled. Server state remains unmodified."
+    exit 0
+fi
+
+# Clean up quotes from whiptail output to create a clean array
+read -a USER_SELECTION <<< $(echo $SELECTION_STR | tr -d '"')
+
+# 4. TEARDOWN LOGIC (Roles deselected by the user)
+ROLES_TO_REMOVE=()
+PACKAGES_TO_PURGE=()
+
+for OLD_ROLE in "${INITIALLY_INSTALLED[@]}"; do
+    # If a previously installed role is NOT in the new selection...
+    if [[ ! " ${USER_SELECTION[@]} " =~ " ${OLD_ROLE} " ]]; then
+        ROLES_TO_REMOVE+=("$OLD_ROLE")
+        PACKAGES_TO_PURGE+=(${ROLES[$OLD_ROLE]})
+    fi
+done
+
+if [ ${#PACKAGES_TO_PURGE[@]} -gt 0 ]; then
+    whiptail --title "SYSTEM MODIFICATION WARNING" \
+    --yesno "Warning: You have deselected currently active roles.\n\nThis action will remove the associated dependencies but will PRESERVE your configuration files (.pacsave):\n\n${ROLES_TO_REMOVE[*]}\n\nProceed with package removal?" 14 70
+
+    if [ $? -eq 1 ]; then
+        echo -e "\n==> Operation aborted. Active services have been preserved."
+        exit 0
+    else
+        echo -e "\n==> Executing dependency removal..."
+        pacman -Rs "${PACKAGES_TO_PURGE[@]}" --noconfirm
+    fi
+fi
+
+# 5. PROVISIONING LOGIC (Only roles strictly added by the user)
+PACKAGES_TO_INSTALL=()
+for NEW_ROLE in "${USER_SELECTION[@]}"; do
+    if [[ ! " ${INITIALLY_INSTALLED[@]} " =~ " ${NEW_ROLE} " ]]; then
+        PACKAGES_TO_INSTALL+=(${ROLES[$NEW_ROLE]})
+    fi
+done
+
+if [ ${#PACKAGES_TO_INSTALL[@]} -gt 0 ]; then
+    echo -e "\n==> Deploying new infrastructure components..."
+    pacman -Sy "${PACKAGES_TO_INSTALL[@]}"
+else
+    echo -e "\n==> No new packages selected for installation."
+fi
+
+echo -e "\n==> Role synchronization completed successfully!"

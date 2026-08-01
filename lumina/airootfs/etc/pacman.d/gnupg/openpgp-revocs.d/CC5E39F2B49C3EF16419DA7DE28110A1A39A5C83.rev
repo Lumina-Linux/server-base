@@ -1,0 +1,38 @@
+Este es un certificado de revocación para la clave OpenPGP:
+
+pub   rsa4096 2026-06-07 [S]
+      CC5E39F2B49C3EF16419DA7DE28110A1A39A5C83
+uid          Pacman Keyring Master Key <pacman@localhost>
+
+Un certificado de revocación es una especie de "interruptor general" para declarar
+públicamente que una clave no debería usarse más. No es posible deshacer
+un certificado de este tipo una vez que se publica.
+
+Úsalo para revocar esta clave en caso de un compromiso o pérdida de
+la clave secreta. De cualquier modo, si la clave secreta está disponible,
+es mejor generar un nuevo certificado de revocación y dar una razón para la misma
+Para más detalles, lee la descripción de la orden gpg "--generate-revocation"
+en el manual GnuPG.
+
+Para prevenir el uso accidental de este archivo se han insertado dos
+puntos (:) antes de los 5 guiones debajo. Remueve estos dos puntos
+con un editor de texto antes de importar y publicar este certificado
+de revocación.
+
+:-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: This is a revocation certificate
+
+iQI2BCABCgAgFiEEzF458rScPvFkGdp94oEQoaOaXIMFAmomBNMCHQAACgkQ4oEQ
+oaOaXIOt0hAAiPzKWTrpQxgv+rlrE/JzuFu2gDfVJ/QSonpQ90GNkrwiJbDIYtig
+wYKDRLOX9QIO3/5/v1MaKJbn+zKPkcOYyglhaAGscrcbRd1NWOXNerBDxvkAnLHO
+E5zen44xRlk3vfGpS74M0USmtRYjN6HHFVGkJjLADKYC6iIk4y+qYomI/ktLurQP
+ghfUsPQaQBLeePWGh/kIx2WrFQRuhIe7xrE9aXipqLwCUKt4EVfAJ98dFbTeIYJp
+7rGqqtsoLXiNxOxprVhdNZhuv7FVCsI+9ZoOjzXX9ymiVZBr4CuLwtSdcRP7eCEj
+18EfEd+6nfVrx0YubVEBQBLPSndxV7aIrTU1zazPpNr70OmxdIxKxYimZf1oPta/
+gZ38S7OE/fYGs1L0IeraIGOQrrTKsXBo1TszrPDTBAM2veHZQNl9vSG7FHSAw5S6
+ExAR6cyMKpV6qvmPU6hVdjiciPRsmrosxC0jh+FaAbzpkvlkgCmxjfc+ygUZQhTu
+U9TAn8fP+7hZnn4YdALk4V9vmKzm7fo8A/33W5VuaxRhW7rCI3tl/gTdje8p1IsC
+C0leuJpx+bWWIjlDXKKZD6BSulhEtd0c5sC07+2cfAM1k9Z5iCGzo3HYIT6QlQDK
+4Lo02fUYqqe+kjrw4jakra/TrBclDf2QugA2iLmQohawZCZ4zsUu8N4=
+=Q0Vt
+-----END PGP PUBLIC KEY BLOCK-----
