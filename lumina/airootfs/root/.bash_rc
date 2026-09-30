@@ -1,0 +1,9 @@
+clear
+echo "========================================================="
+echo "   Welcome to Lumina Server Live Environment
+echo "========================================================="
+echo ""
+echo "  To start the system installation, run:"
+echo "  /lumina-install.sh"
+echo ""
+echo "========================================================="

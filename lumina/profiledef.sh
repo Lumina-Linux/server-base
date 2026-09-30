@@ -21,9 +21,7 @@ file_permissions=(
   ["/root/.gnupg"]="0:0:700"
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/usr/local/bin/Installation_guide"]="0:0:755"
-  ["/usr/bin/calamares"]="0:0:755"
-  ["/usr/bin/lumina-calamares"]="0:0:755"
-  ["/root/.xinitrc"]="0:0:755"
-  ["/root/.zprofile"]="0:0:755"
+  ["/root/lumina-install.sh"]="0:0:755"
+  ["/usr/local/bin/roleman"]="0:0:755"
   ["/usr/local/bin/lumina-postinstall.sh"]="0:0:755"
 )
